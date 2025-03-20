@@ -9,14 +9,17 @@ function App() {
   const dispatch = useDispatch();
   const { token } = useSelector((state) => state.auth);
   useEffect(() => {
-    const routes = getRoutes();
-    setAllRoutes([...allRoutes, routes]);
-  },[]);
+    const r =()=>{
+      const routes = getRoutes();
+      setAllRoutes([...allRoutes, routes]);
+    }
+    r();
+  },[allRoutes]);
   useEffect(() => {
     if (token) {
       dispatch(get_user_info());
     }
-  }, []);
+  }, [dispatch, token]);
   return <Router allRoutes={allRoutes} />;
 }
 

@@ -30,7 +30,7 @@ const AddProduct = () => {
 
   useEffect(() => {
     dispatch(get_category({ searchValue: "", parPage: "", page: "" }));
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (successMessage) {
@@ -52,7 +52,7 @@ const AddProduct = () => {
       toast.error(errorMessage);
       dispatch(messageClear());
     }
-  }, [successMessage, errorMessage]);
+  }, [successMessage, errorMessage,dispatch]);
 
   const inputHandle = (e) => {
     setState({ ...state, [e.target.name]: e.target.value });
