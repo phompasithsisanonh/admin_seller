@@ -9,7 +9,7 @@ const Search = ({ setParPage, setSearchValue, searchValue }) => {
           onChange={(e) => setSearchValue(e.target.value)}
           value={searchValue}
           focusBorderColor="indigo.500"
-          _hover={{ borderColor: "indigo.500" }}
+          _hover={{ borderColor: "indigo" }}
           placeholder="ຄົ້ນຫາຊື່ ຫຼື ເລກລະຫັດຜູ້ຂາຍ"
           w="auto"
         />
