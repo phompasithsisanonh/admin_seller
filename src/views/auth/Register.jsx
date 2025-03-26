@@ -6,7 +6,6 @@ import { PropagateLoader } from "react-spinners";
 import {
   seller_register,
   send_otp,
-  verify_otp,
   messageClear,
 } from "../../store/Reducers/authReducer";
 import toast from "react-hot-toast";
