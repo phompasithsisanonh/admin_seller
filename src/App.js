@@ -15,9 +15,10 @@ function App() {
   }, []); // Empty dependency array since no external dependencies
 
   useEffect(() => {
-    if (token) {
-      dispatch(get_user_info());
-    }
+    // if (token) {
+    //   dispatch(get_user_info());
+    // }
+    dispatch(get_user_info());
   }, [dispatch, token]);
 
   return <Router allRoutes={allRoutes} />;
