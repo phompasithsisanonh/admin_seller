@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
-import { 
-  Box, 
-  SimpleGrid, 
-  Text, 
-  Container, 
-  Spinner, 
-  Alert, 
+import {
+  Box,
+  SimpleGrid,
+  Text,
+  Container,
+  Spinner,
+  Alert,
   AlertIcon,
   Heading,
   Stat,
@@ -19,32 +19,47 @@ import {
   Flex,
   Icon,
   Divider,
-  useColorModeValue
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { dashbord } from "../../store/Reducers/productReducer";
-import { FiShoppingBag, FiPackage, FiCreditCard, FiClock } from "react-icons/fi";
+import {
+  FiShoppingBag,
+  FiPackage,
+  FiCreditCard,
+  FiClock,
+} from "react-icons/fi";
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
- 
   // ข้อมูลจาก Redux (ปรับตามโครงสร้าง backend)
+
   const {
     paid_orders = [],
     pending_orders = [],
     total_sales = [],
     all_products = [],
-    loader, 
-    error 
+    loader,
+    error,
   } = useSelector((state) => state.product);
 
   // แปลงเดือนจากตัวเลขเป็นชื่อ
   const months = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
   ];
-  const monthLabels = total_sales.map((item) => 
-    months[(item._id?.month || 1) - 1] || "Unknown"
+  const monthLabels = total_sales.map(
+    (item) => months[(item._id?.month || 1) - 1] || "Unknown"
   );
 
   // Theme colors
@@ -54,8 +69,8 @@ const AdminDashboard = () => {
   const secondaryColor = "#9F7AEA"; // Purple color
 
   const [chartOptions] = useState({
-    chart: { 
-      type: "bar", 
+    chart: {
+      type: "bar",
       height: 350,
       toolbar: {
         show: true,
@@ -66,35 +81,35 @@ const AdminDashboard = () => {
           zoomin: true,
           zoomout: true,
           pan: true,
-        }
+        },
       },
       fontFamily: "Inter, sans-serif",
     },
     plotOptions: {
-      bar: { 
-        horizontal: false, 
-        columnWidth: "55%", 
+      bar: {
+        horizontal: false,
+        columnWidth: "55%",
         endingShape: "rounded",
         borderRadius: 4,
       },
     },
     dataLabels: { enabled: false },
     stroke: { show: true, width: 2, colors: ["transparent"] },
-    xaxis: { 
+    xaxis: {
       categories: monthLabels,
       axisBorder: { show: true, color: borderColor },
       axisTicks: { show: true, color: borderColor },
     },
-    yaxis: { 
-      title: { text: "ຍອດຂາຍ", style: { fontSize: '14px', fontWeight: 500 } },
-      labels: { formatter: (val) => val.toLocaleString() }
+    yaxis: {
+      title: { text: "ຍອດຂາຍ", style: { fontSize: "14px", fontWeight: 500 } },
+      labels: { formatter: (val) => val.toLocaleString() },
     },
     fill: { opacity: 1 },
-    tooltip: { 
+    tooltip: {
       y: { formatter: (val) => val.toLocaleString() },
       theme: "light",
     },
-    legend: { 
+    legend: {
       position: "top",
       horizontalAlign: "right",
       offsetY: -30,
@@ -133,64 +148,92 @@ const AdminDashboard = () => {
   }, [total_sales]);
 
   // คำนวณยอดขายรวม
-  const totalRevenue = total_sales.reduce((acc, curr) => acc + (curr.totalRevenue || 0), 0);
+  const totalRevenue = total_sales.reduce(
+    (acc, curr) => acc + (curr.totalRevenue || 0),
+    0
+  );
 
   // Stats data
   const statsData = [
-    { 
-      title: "Total Sales", 
-      value: totalRevenue.toLocaleString() || 0, 
+    {
+      title: "Total Sales",
+      value: totalRevenue.toLocaleString() || 0,
       icon: FiCreditCard,
-      color: "purple.500" 
+      color: "purple.500",
     },
-    { 
-      title: "Products", 
-      value: all_products.length || 0, 
+    {
+      title: "Products",
+      value: all_products.length || 0,
       icon: FiPackage,
-      color: "blue.500" 
+      color: "blue.500",
     },
-    { 
-      title: "Paid Orders", 
-      value: paid_orders.length || 0, 
+    {
+      title: "Paid Orders",
+      value: paid_orders.length || 0,
       icon: FiShoppingBag,
-      color: "green.500" 
+      color: "green.500",
     },
-    { 
-      title: "Pending Orders", 
-      value: pending_orders.length || 0, 
+    {
+      title: "Pending Orders",
+      value: pending_orders.length || 0,
       icon: FiClock,
-      color: "orange.500" 
-    }
+      color: "orange.500",
+    },
   ];
 
   return (
     <Container maxW="container.xl" py={8}>
       {loader && (
-        <Flex direction="column" alignItems="center" justifyContent="center" py={10}>
-          <Spinner size="xl" thickness="4px" speed="0.65s" color={primaryColor} />
-          <Text mt={4} fontSize="lg">ກຳລັງໂຫລດ...</Text>
+        <Flex
+          direction="column"
+          alignItems="center"
+          justifyContent="center"
+          py={10}
+        >
+          <Spinner
+            size="xl"
+            thickness="4px"
+            speed="0.65s"
+            color={primaryColor}
+          />
+          <Text mt={4} fontSize="lg">
+            ກຳລັງໂຫລດ...
+          </Text>
         </Flex>
       )}
-      
+
       {error && (
         <Alert status="error" mb={6} borderRadius="lg" variant="left-accent">
           <AlertIcon />
           ເກີດຂໍ້ຜິດພາດ: {error}
         </Alert>
       )}
-      
+
       {!loader && !error && (
         <>
           <Heading as="h1" size="xl" mb={6} color={primaryColor}>
             Dashboard Overview
           </Heading>
-          
+
           <SimpleGrid columns={[1, 2, 4]} spacing={6} mb={8}>
             {statsData.map((stat, index) => (
-              <Card key={index} borderRadius="lg" boxShadow="md" bg={cardBg} borderWidth="1px" borderColor={borderColor}>
+              <Card
+                key={index}
+                borderRadius="lg"
+                boxShadow="md"
+                bg={cardBg}
+                borderWidth="1px"
+                borderColor={borderColor}
+              >
                 <CardBody>
                   <Flex align="center">
-                    <Box p={3} borderRadius="lg" bg={stat.color} color="white" mr={4}>
+                    <Box
+                      p={3}
+                      borderRadius="lg"
+                      bg={stat.color}
+                      color="white"
+                      mr={4}
+                    >
                       <Icon as={stat.icon} boxSize={6} />
                     </Box>
                     <Stat>
@@ -204,9 +247,18 @@ const AdminDashboard = () => {
             ))}
           </SimpleGrid>
 
-          <Card borderRadius="lg" boxShadow="md" bg={cardBg} mb={8} borderWidth="1px" borderColor={borderColor}>
+          <Card
+            borderRadius="lg"
+            boxShadow="md"
+            bg={cardBg}
+            mb={8}
+            borderWidth="1px"
+            borderColor={borderColor}
+          >
             <CardHeader pb={0}>
-              <Heading size="md" color={primaryColor}>Monthly Sales Performance</Heading>
+              <Heading size="md" color={primaryColor}>
+                Monthly Sales Performance
+              </Heading>
             </CardHeader>
             <CardBody pt={2}>
               {total_sales.length > 0 ? (
@@ -217,16 +269,30 @@ const AdminDashboard = () => {
                   height={400}
                 />
               ) : (
-                <Flex justifyContent="center" alignItems="center" height="300px">
-                  <Text textAlign="center" color="gray.500">ບໍ່ມີຂໍ້ມູນສຳລັບການສະແດງຜົນ</Text>
+                <Flex
+                  justifyContent="center"
+                  alignItems="center"
+                  height="300px"
+                >
+                  <Text textAlign="center" color="gray.500">
+                    ບໍ່ມີຂໍ້ມູນສຳລັບການສະແດງຜົນ
+                  </Text>
                 </Flex>
               )}
             </CardBody>
           </Card>
 
-          <Card borderRadius="lg" boxShadow="md" bg={cardBg} borderWidth="1px" borderColor={borderColor}>
+          <Card
+            borderRadius="lg"
+            boxShadow="md"
+            bg={cardBg}
+            borderWidth="1px"
+            borderColor={borderColor}
+          >
             <CardHeader>
-              <Heading size="md" color={primaryColor}>Recent Customer Messages</Heading>
+              <Heading size="md" color={primaryColor}>
+                Recent Customer Messages
+              </Heading>
             </CardHeader>
             <Divider borderColor={borderColor} />
             <CardBody>

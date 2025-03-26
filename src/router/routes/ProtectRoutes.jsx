@@ -13,10 +13,10 @@ const ProtectRoute = ({ route, children }) => {
               return <Suspense fallback={null}>{children}</Suspense>;
             } else {
               if (userInfo.status === "pending") {
-                return <Navigate to="/seller/account-pending" replace />;
+                return <Navigate to="/seller/dashboard/profile" replace />;
               } else if (userInfo.status === "active") {
                 return <Suspense fallback={null}>{children}</Suspense>;
-              } else {
+              }  else {
                 return <Navigate to="/seller/account-deactive" replace />;
               }
             }

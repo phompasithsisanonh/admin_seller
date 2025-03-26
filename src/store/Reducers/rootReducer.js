@@ -6,6 +6,7 @@ import sellerReducer from "./sellerReducer";
 import  chatReducer  from "./chatReducer";
 import  couponReducer  from "./couponReducer";
 import  walletReducer  from "./walletReducer";
+import  download  from "./download";
 const rootReducer = combineReducers({
   auth: authReducer,
   category: categoryReducer,
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   seller: sellerReducer,
   chat:chatReducer,
   coupon:couponReducer,
-  wallet:walletReducer
+  wallet:walletReducer,
+  download:download
 });
 export default rootReducer;

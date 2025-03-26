@@ -18,16 +18,14 @@ const returnRole = (token) => {
 export const admin_login = createAsyncThunk(
   "auth/admin_login",
   async (info, { rejectWithValue, fulfillWithValue }) => {
-    console.log(info);
     try {
       const { data } = await api.post("/admin-login", info, {
         withCredentials: true,
       });
       localStorage.setItem("accessToken", data.token);
-      console.log(data);
       return fulfillWithValue(data);
     } catch (error) {
-      console.log(error.response.data);
+      console.log(error);
       return rejectWithValue(error.response.data);
     }
   }
@@ -193,15 +191,30 @@ export const get_profileseller = createAsyncThunk(
 
 export const uploadKycDocument = createAsyncThunk(
   "auth/uploadKycDocument ",
-  async ( formData , { rejectWithValue, fulfillWithValue }) => {
+  async (formData, { rejectWithValue, fulfillWithValue }) => {
     try {
       // วิธีดูข้อมูลใน FormData
-for (let [key, value] of formData.entries()) {
-  console.log(`${key}: ${value instanceof File ? value.name : value}`);
-}
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}: ${value instanceof File ? value.name : value}`);
+      }
+      const { data } = await api.post(`/uploadKycDocument `, formData, {
+        withCredentials: true,
+      });
+      console.log(data);
+      return fulfillWithValue(data);
+    } catch (error) {
+      // console.log(error.response.data)
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const send_mail = createAsyncThunk(
+  "auth/send_mail ",
+  async ({ email }, { rejectWithValue, fulfillWithValue }) => {
+    try {
       const { data } = await api.post(
-        `/uploadKycDocument `,
-        formData,
+        `/send_email`,
+        { email },
         {
           withCredentials: true,
         }
@@ -214,6 +227,63 @@ for (let [key, value] of formData.entries()) {
     }
   }
 );
+export const reset_password = createAsyncThunk(
+  "auth/reset_password",
+  async (
+    { token, newPassword, confirmPassword },
+    { rejectWithValue, fulfillWithValue }
+  ) => {
+    try {
+      const { data } = await api.post(
+        `/reset-password`,
+        { token, newPassword, confirmPassword },
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(data);
+      return fulfillWithValue(data);
+    } catch (error) {
+      // console.log(error.response.data)
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const send_otp = createAsyncThunk(
+  "auth/send_otp",
+  async ({ email }, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      const { data } = await api.post(
+        `/send_otp`,
+        { email },
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(data);
+      return fulfillWithValue(data);
+    } catch (error) {
+      // console.log(error.response.data)
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const updateLastLogin = createAsyncThunk(
+  "auth/updateLastLogin ",
+  async (_, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      const { data } = await api.get(`/updateLastLogin `, {
+        withCredentials: true,
+      });
+      return fulfillWithValue(data);
+    } catch (error) {
+      // console.log(error.response.data)
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const authReducer = createSlice({
   name: "auth",
   initialState: {
@@ -228,6 +298,9 @@ export const authReducer = createSlice({
     data_get_admin_seller: [],
     get_order_to_admins: [],
     data_get_profileseller: [],
+
+    ///updateLastLoginData
+    updateLastLoginData: "",
   },
   reducers: {
     messageClear: (state, _) => {
@@ -343,13 +416,51 @@ export const authReducer = createSlice({
       })
       .addCase(uploadKycDocument.rejected, (state, { payload }) => {
         state.loader = false;
-        state.errorMessage = '';
+        state.errorMessage = payload.error;
       })
       .addCase(uploadKycDocument.fulfilled, (state, { payload }) => {
         state.loader = false;
         state.successMessage = payload.message;
+      })
+
+      .addCase(send_mail.pending, (state, { payload }) => {
+        state.loader = true;
+      })
+      .addCase(send_mail.rejected, (state, { payload }) => {
+        state.loader = false;
+        state.errorMessage = payload.message;
+      })
+      .addCase(send_mail.fulfilled, (state, { payload }) => {
+        state.loader = false;
+        state.successMessage = payload.message;
+      })
+      .addCase(reset_password.pending, (state, { payload }) => {
+        state.loader = true;
+      })
+      .addCase(reset_password.rejected, (state, { payload }) => {
+        state.loader = false;
+        state.errorMessage = payload.message;
+      })
+      .addCase(reset_password.fulfilled, (state, { payload }) => {
+        state.loader = false;
+        state.successMessage = payload.message;
+      })
+
+      .addCase(send_otp.pending, (state, { payload }) => {
+        state.loader = true;
+      })
+      .addCase(send_otp.rejected, (state, { payload }) => {
+        state.loader = false;
+        state.errorMessage = payload.message;
+      })
+      .addCase(send_otp.fulfilled, (state, { payload }) => {
+        state.loader = false;
+        state.successMessage = payload.message;
+      })
+      .addCase(updateLastLogin.fulfilled, (state, { payload }) => {
+        state.updateLastLoginData=payload.data
       });
   },
-});
+}); 
 export const { messageClear } = authReducer.actions;
 export default authReducer.reducer;

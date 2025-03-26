@@ -18,8 +18,16 @@ import {
   IconButton,
   VStack,
   Image,
+  Heading,
+  InputGroup,
+  InputRightElement,
+  useColorModeValue,
+  useDisclosure,
+  Stack,
 } from "@chakra-ui/react";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import logoshop from "../../layout/logoshop.png";
+
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -28,6 +36,7 @@ const Login = () => {
   );
 
   const [state, setState] = useState({ email: "", password: "" });
+  const { isOpen, onToggle } = useDisclosure();
 
   const inputHandle = (e) => {
     setState({ ...state, [e.target.name]: e.target.value });
@@ -48,90 +57,185 @@ const Login = () => {
       toast.error(errorMessage);
       dispatch(messageClear());
     }
-  }, [successMessage, errorMessage,dispatch ,navigate]);
+  }, [successMessage, errorMessage, dispatch, navigate]);
+
+  const bgColor = useColorModeValue("white", "gray.800");
+  const borderColor = useColorModeValue("gray.200", "gray.700");
+  const primaryColor = "purple.500";
+  const secondaryColor = "purple.600";
 
   return (
-    <Flex minH="100vh" bg="#f7f7fc" align="center" justify="center">
-      <Container maxW="sm" bg="white" p={6} rounded="lg" shadow="lg">
-        <Box textAlign="center" mb="4">
-                 <Image
-                   src={logoshop}
-                   alt="logo"
-                   mx="auto"
-                   borderRadius={'50'}
-                   objectFit={"cover"}
-                   boxSize="80px"
-                 />
-               </Box>
-        <Text textAlign="center" color="gray.600" mb={4}>
-         SELLER SIGN
-        </Text>
+    <Flex 
+      minH="100vh" 
+      bg={useColorModeValue("gray.50", "gray.900")} 
+      align="center" 
+      justify="center"
+      p={4}
+    >
+      <Container 
+        maxW="md" 
+        bg={bgColor} 
+        p={8} 
+        rounded="xl" 
+        shadow="lg"
+        borderWidth="1px"
+        borderColor={borderColor}
+        transition="all 0.3s ease"
+      >
+        <VStack spacing={6} align="center">
+          <Box 
+            position="relative"
+            p={2}
+          >
+            <Box
+              position="absolute"
+              top="0"
+              left="0"
+              right="0"
+              bottom="0"
+              bgGradient="linear(to-r, purple.400, purple.600)"
+              opacity="0.1"
+              borderRadius="full"
+              transform="scale(1.1)"
+            />
+            <Image
+              src={logoshop}
+              alt="Shop Logo"
+              borderRadius="full"
+              boxSize="100px"
+              objectFit="cover"
+            />
+          </Box>
+          
+          <Box textAlign="center">
+            <Heading size="lg" mb={1} color={primaryColor}>Seller Portal</Heading>
+            <Text fontSize="sm" color="gray.500">Access your seller dashboard</Text>
+          </Box>
 
-        <form onSubmit={submit}>
-          <VStack spacing={4}>
-            <FormControl isRequired>
-              <FormLabel>Email</FormLabel>
-              <Input
-                type="email"
-                name="email"
-                placeholder="Enter your email"
-                value={state.email}
-                onChange={inputHandle}
-                focusBorderColor="purple.400"
-              />
-            </FormControl>
+          <form onSubmit={submit} style={{ width: '100%' }}>
+            <VStack spacing={5} align="stretch">
+              <FormControl isRequired>
+                <FormLabel fontSize="sm" fontWeight="medium">Email Address</FormLabel>
+                <Input
+                  type="email"
+                  name="email"
+                  placeholder="your@email.com"
+                  value={state.email}
+                  onChange={inputHandle}
+                  size="md"
+                  bg={useColorModeValue("gray.50", "gray.700")}
+                  borderRadius="md"
+                  focusBorderColor={primaryColor}
+                />
+              </FormControl>
 
-            <FormControl isRequired>
-              <FormLabel>Password</FormLabel>
-              <Input
-                type="password"
-                name="password"
-                placeholder="Enter your password"
-                value={state.password}
-                onChange={inputHandle}
-                focusBorderColor="purple.400"
-              />
-            </FormControl>
+              <FormControl isRequired>
+                <Flex justify="space-between" align="center">
+                  <FormLabel fontSize="sm" fontWeight="medium">Password</FormLabel>
+                  <Link
+                    to="/send-email"
+                    style={{ fontSize: '0.75rem', color: '#805AD5' }}
+                  >
+                    Forgot Password?
+                  </Link>
+                </Flex>
+                <InputGroup>
+                  <Input
+                    type={isOpen ? "text" : "password"}
+                    name="password"
+                    placeholder="Enter your password"
+                    value={state.password}
+                    onChange={inputHandle}
+                    size="md"
+                    bg={useColorModeValue("gray.50", "gray.700")}
+                    borderRadius="md"
+                    focusBorderColor={primaryColor}
+                  />
+                  <InputRightElement>
+                    <IconButton
+                      icon={isOpen ? <ViewOffIcon /> : <ViewIcon />}
+                      variant="ghost"
+                      onClick={onToggle}
+                      aria-label={isOpen ? "Hide password" : "Show password"}
+                      size="sm"
+                      color="gray.500"
+                      _hover={{ color: primaryColor }}
+                    />
+                  </InputRightElement>
+                </InputGroup>
+              </FormControl>
 
-            <Button
-              type="submit"
-              colorScheme="purple"
-              width="full"
-              isLoading={loader}
-              spinner={<PropagateLoader color="white" size={10} />}
-            >
-              Sign In
-            </Button>
+              <Button
+                type="submit"
+                colorScheme="purple"
+                width="full"
+                size="md"
+                mt={2}
+                isLoading={loader}
+                spinner={<PropagateLoader color="white" size={10} />}
+                boxShadow="sm"
+                _hover={{
+                  transform: "translateY(-2px)",
+                  boxShadow: "md",
+                  bg: secondaryColor
+                }}
+                transition="all 0.2s ease"
+              >
+                Sign In
+              </Button>
+            </VStack>
+          </form>
 
-            <Text fontSize="sm">
-              Don’t have an account?{" "}
-              <Link to="/register" style={{ color: "#6f68d1", fontWeight: "bold" }}>
+          <Stack direction="row" spacing={1} w="full" justify="center" pt={2}>
+            <Text fontSize="sm" color="gray.500">
+              Don't have an account?
+            </Text>
+            <Link to="/register">
+              <Text fontSize="sm" color={primaryColor} fontWeight="semibold">
                 Sign Up
-              </Link>
-            </Text>
+              </Text>
+            </Link>
+          </Stack>
 
-            <Divider my={3} />
+          <Box w="full" pt={2}>
+            <Flex align="center" mb={4}>
+              <Divider />
+              <Text px={3} color="gray.500" fontSize="xs" textTransform="uppercase" fontWeight="bold">
+                or continue with
+              </Text>
+              <Divider />
+            </Flex>
 
-            <Text fontSize="sm" textAlign="center">
-              Or sign in with
-            </Text>
-
-            <Flex gap={4}>
+            <Flex justify="center" gap={4}>
               <IconButton
                 aria-label="Sign in with Google"
                 icon={<FaGoogle />}
                 colorScheme="red"
+                variant="outline"
+                borderRadius="md"
                 size="lg"
+                _hover={{
+                  transform: "translateY(-2px)",
+                  shadow: "md",
+                }}
+                transition="all 0.2s ease"
               />
               <IconButton
                 aria-label="Sign in with Facebook"
                 icon={<FaFacebook />}
-                colorScheme="blue"
+                colorScheme="facebook"
+                variant="outline"
+                borderRadius="md"
                 size="lg"
+                _hover={{
+                  transform: "translateY(-2px)",
+                  shadow: "md",
+                }}
+                transition="all 0.2s ease"
               />
             </Flex>
-          </VStack>
-        </form>
+          </Box>
+        </VStack>
       </Container>
     </Flex>
   );

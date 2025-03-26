@@ -16,16 +16,39 @@ import {
   useDisclosure,
   VStack,
   Avatar,
+  Badge,
 } from "@chakra-ui/react";
-import { useSelector } from "react-redux";
+import {  useSelector } from "react-redux";
 import { FaList } from "react-icons/fa";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+// import { updateLastLogin } from "../store/Reducers/authReducer";
 
+dayjs.extend(relativeTime);
+dayjs.extend(utc);
+dayjs.extend(timezone);
 const Sidebar = () => {
-  const { role, userInfo } = useSelector((state) => state.auth);
+  // updateLastLoginData
+  const { role, userInfo,  } = useSelector(
+    (state) => state.auth
+  );
   const { pathname } = useLocation();
   const [allNav, setAllNav] = useState([]);
+  // const dispatch = useDispatch();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
+  // const [formattedTime, setFormattedTime] = useState("");
+  // useEffect(() => {
+  //   const formDated = () => {
+  //     return setFormattedTime(
+  //       dayjs(updateLastLoginData.updatedAt).utc(7).tz("Asia/Bangkok").toLocaleString()
+  //     );
+  //   };
+  //   formDated();
+  //   dispatch(updateLastLogin());
+  // }, [dispatch, updateLastLoginData]);
   useEffect(() => {
     const navs = getNav(role);
     setAllNav(navs);
@@ -103,7 +126,7 @@ const Sidebar = () => {
                 mt={2}
                 borderRadius="md"
                 color="gray.700"
-                onClick={()=>handleOut()}
+                onClick={() => handleOut()}
                 _hover={{ bg: "red.50", color: "red.600" }}
               >
                 Logout
@@ -139,16 +162,22 @@ const Sidebar = () => {
               src={userInfo?.avatar}
               mr={3}
             />
-            <Box>
-              <Text fontSize="md" fontWeight="medium" isTruncated>
-                {userInfo?.name || "User"}
-              </Text>
-              <Text fontSize="sm" color="gray.500">
-                {role}
-              </Text>
-            </Box>
-          </Flex>
+            <VStack align="stretch" spacing={0}>
 
+            <Text fontSize="md" fontWeight="medium" isTruncated>
+              {userInfo?.name || "User"}
+            </Text>
+            <Text color={'blue.200'} fontSize="15px" fontWeight="medium" isTruncated>
+              {userInfo?.role || "undefind"}
+            </Text>
+            </VStack>
+          </Flex>
+          <Box>
+            <Text fontSize="sm" color="gray.600">
+              ເຂົ້າສູ່ລະບົບລ່າສຸດ:{" "}
+              <Badge colorScheme="green"></Badge>
+            </Text>
+          </Box>
           {/* Navigation Items */}
           {allNav.map((n, i) => (
             <Link to={n.path} key={i}>

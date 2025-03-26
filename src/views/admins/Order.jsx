@@ -38,19 +38,18 @@ import {
   Stack,
   Tag,
   Tooltip,
+  ButtonGroup,
 } from "@chakra-ui/react";
 import { FiEye, FiDollarSign } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { get_order_to_admin } from "../../store/Reducers/authReducer";
+import { download_excel } from "../../store/Reducers/download";
 
 const Order = () => {
   const { get_order_to_admins } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const { successMessage, errorMessage } = useSelector(
-    (state) => state.seller
-  );
+  const { successMessage, errorMessage } = useSelector((state) => state.seller);
   const { userInfo } = useSelector((state) => state.auth);
-  console.log(get_order_to_admins);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -59,6 +58,7 @@ const Order = () => {
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const headerBg = useColorModeValue("gray.50", "gray.700");
 
+  const [selectedExcel, setSelectedExcel] = useState(null);
   useEffect(() => {
     dispatch(get_order_to_admin());
   }, [dispatch, userInfo._id]);
@@ -92,17 +92,28 @@ const Order = () => {
     setSelectedOrder(order);
     setIsReceiptModalOpen(true);
   };
-
+  const handledownload = (data) => {
+    dispatch(
+      download_excel({
+        model: data,
+      })
+    );
+  };
   return (
     <Box bg="white" borderRadius="md" shadow="md" p={5}>
       <Flex justify="space-between" align="center" mb={5}>
-        <Text
-          fontSize="2xl"
-          fontWeight="bold"
-          fontFamily="Noto Sans Lao, serif"
-        >
-          ຄຳສັ່ງຊື້
-        </Text>
+        <ButtonGroup>
+          <Select onChange={(e) => setSelectedExcel(e.target.value)}>
+            <option value="orderauth">authOrder</option>
+            <option value="customerOrder">customerOrder</option>
+          </Select>
+          <Button
+            onClick={() => handledownload(selectedExcel)}
+            colorScheme="green"
+          >
+            DOWNLOAD EXCEL
+          </Button>
+        </ButtonGroup>
         <HStack>
           <Badge colorScheme="green" p={2} borderRadius="md">
             ຈຳນວນຄຳສັ່ງຊື້: {get_order_to_admins?.length || 0}
@@ -117,7 +128,10 @@ const Order = () => {
         borderColor={borderColor}
         overflow="hidden"
       >
-        <CardHeader bg={headerBg} py={4}></CardHeader>
+        <CardHeader bg={headerBg} py={4}>
+          {" "}
+          ຄຳສັ່ງຊື້
+        </CardHeader>
         <CardBody p={0}>
           <Box overflowX="auto">
             <Table variant="simple" size="md">
