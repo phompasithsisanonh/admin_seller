@@ -4,22 +4,21 @@ import Router from "./router/Router";
 import { getRoutes } from "./router/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { get_user_info } from "./store/Reducers/authReducer";
+import { useNavigate } from "react-router-dom";
 function App() {
   const [allRoutes, setAllRoutes] = useState([...publicRoutes]);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { token } = useSelector((state) => state.auth);
-
   useEffect(() => {
     const routes = getRoutes();
-    setAllRoutes(prevRoutes => [...prevRoutes, routes]);
-  }, []); // Empty dependency array since no external dependencies
-
+    setAllRoutes([...allRoutes, routes]);
+  },[]);
   useEffect(() => {
     if (token) {
       dispatch(get_user_info());
     }
-  }, [dispatch, token]);
-
+  }, [dispatch, token, navigate]);
   return <Router allRoutes={allRoutes} />;
 }
 
