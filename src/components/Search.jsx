@@ -12,7 +12,7 @@ const Search = ({ setParPage, setSearchValue, searchValue }) => {
           _hover={{ borderColor: "indigo.500" }}
           w="auto"
         >
-          <option value="5">5</option>
+          <option value="5">9</option>
           <option value="10">10</option>
 
         </Select>
